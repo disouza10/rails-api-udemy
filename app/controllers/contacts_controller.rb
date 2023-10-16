@@ -5,12 +5,35 @@ class ContactsController < ApplicationController
   def index
     @contacts = Contact.all
 
+    # render json: @contacts, root: true
+    # retorna a raiz também, ex:
+    # {
+    #     "contact": {
+    #         "id": 1,
+    #         "name": "Fr. Woodrow Raynor",
+    #         "email": "reina.cassin@strosin-schowalter.io",
+    #         "birthdate": "2005-05-21",
+    #         "created_at": "2023-10-03T01:11:49.053Z",
+    #         "updated_at": "2023-10-03T01:11:49.053Z"
+    #     }
+    # }
+
+    # restringir/excluir alguns campos
+    # render json: @contacts, only: [:name, :email]
+    # render json: @contacts, except: [:name, :email]
+
+    # adicionar métodos em que posso adicionar novos atributos
+    # render json: @contacts, methods: :author
+
     render json: @contacts
   end
 
   # GET /contacts/1
   def show
-    render json: @contact
+    # render json: @contact, except: :kind_id, include: :kind
+    render json: @contact.to_br
+
+    # render json: @contact
   end
 
   # POST /contacts
@@ -46,6 +69,11 @@ class ContactsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def contact_params
-      params.require(:contact).permit(:name, :email, :birthdate)
+      params.require(:contact).permit(
+        :name,
+        :email,
+        :birthdate,
+        :kind_id
+      )
     end
 end
